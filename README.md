@@ -2,6 +2,8 @@
 
 A comprehensive template repository for managing protobuf protocol definitions with both Buf and protoc workflows. Designed for seamless integration into Go microservices via git subtree.
 
+> **Built to work with [go-microservice-template](https://github.com/andskur/go-microservice-template)** - This repository provides the protocol definitions layer for microservices built with the go-microservice-template.
+
 ## Features
 
 - **Dual Workflow Support**: Use modern Buf tooling or traditional protoc
@@ -35,10 +37,12 @@ A comprehensive template repository for managing protobuf protocol definitions w
 
 ### Integrating with Microservices
 
-Add this protocols repository to your microservice using git subtree:
+This repository is designed to work seamlessly with [go-microservice-template](https://github.com/andskur/go-microservice-template).
+
+**Using with go-microservice-template:**
 
 ```bash
-# In your microservice repository
+# In your microservice created from go-microservice-template
 make proto-setup PROTO_REPO=https://github.com/andskur/protocols-template.git
 
 # Update protocols
@@ -48,7 +52,9 @@ make proto-update
 make proto-generate PROTO_PACKAGE=user
 ```
 
-For detailed integration instructions, see [docs/INTEGRATION.md](docs/INTEGRATION.md).
+**Using with any Go microservice:**
+
+Add this protocols repository using git subtree (see [docs/INTEGRATION.md](docs/INTEGRATION.md) for detailed instructions).
 
 ## Repository Structure
 
@@ -250,9 +256,9 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Related Projects
 
-- [go-microservice-template](https://github.com/andskur/go-microservice-template): Go microservice template that integrates with this protocols template
-- [Buf](https://buf.build): Modern Protobuf tooling
-- [gRPC](https://grpc.io): High-performance RPC framework
+- **[go-microservice-template](https://github.com/andskur/go-microservice-template)** - Production-ready Go microservice template with built-in support for this protocols repository. Use them together for a complete microservices solution.
+- [Buf](https://buf.build) - Modern Protobuf tooling
+- [gRPC](https://grpc.io) - High-performance RPC framework
 
 ## Support
 
