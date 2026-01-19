@@ -301,7 +301,7 @@ GetUserRequest is the request message for GetUser.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [string](#string) |  | ID of the user to retrieve. |
+| id | [common.v1.UUID](#common-v1-UUID) |  | ID of the user to retrieve (UUID, 16 bytes). |
 
 
 
@@ -316,7 +316,7 @@ User represents a user account in the system.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [string](#string) |  | Unique user identifier. |
+| id | [common.v1.UUID](#common-v1-UUID) |  | Unique user identifier (UUID, 16 bytes). |
 | email | [string](#string) |  | User&#39;s email address (must be unique). |
 | name | [string](#string) |  | User&#39;s display name. |
 | status | [common.v1.CommonStatus](#common-v1-CommonStatus) |  | User&#39;s account status. |
