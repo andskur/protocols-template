@@ -48,15 +48,12 @@ ifndef PACKAGE
 	@exit 1
 endif
 	@echo "Generating Go code for $(PACKAGE) using Buf..."
-	@cd $(PACKAGE) && buf generate
+	@buf generate --path $(PACKAGE)
 
 .PHONY: buf-generate-all
 buf-generate-all: ## Generate Go code for all packages using Buf
 	@echo "Generating Go code for all packages using Buf..."
-	@for dir in common user; do \
-		echo "Generating $$dir..."; \
-		cd $$dir && buf generate && cd ..; \
-	done
+	@buf generate
 
 # Protoc workflow targets
 .PHONY: protoc-validate

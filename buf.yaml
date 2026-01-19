@@ -1,7 +1,4 @@
 version: v2
-modules:
-  - path: common/v1
-  - path: user/v1
 lint:
   use:
     - DEFAULT

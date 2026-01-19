@@ -179,18 +179,6 @@ To use this service in your microservice:
    \`\`\`
 EOF
 
-# Update buf.yaml to include new module
-echo "Updating buf.yaml..."
-if ! grep -q "path: $SERVICE_NAME/v1" buf.yaml; then
-    # Add new module to buf.yaml modules section
-    sed -i.bak "/modules:/a\\
-  - path: $SERVICE_NAME/v1" buf.yaml
-    rm buf.yaml.bak 2>/dev/null || true
-    echo "Added $SERVICE_NAME/v1 to buf.yaml modules"
-else
-    echo "$SERVICE_NAME/v1 already exists in buf.yaml"
-fi
-
 echo ""
 echo "✓ Service '$SERVICE_NAME' created successfully!"
 echo ""
