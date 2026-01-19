@@ -23,7 +23,7 @@ Represents a user account in the system.
 
 ```protobuf
 message User {
-  string id = 1;                           // Unique user identifier
+  common.v1.UUID id = 1;                   // Unique user identifier (UUID)
   string email = 2;                        // User's email address
   string name = 3;                         // User's display name
   common.v1.CommonStatus status = 4;       // Account status
@@ -34,7 +34,7 @@ message User {
 
 **Field Details:**
 
-- `id`: Unique identifier, typically UUID format
+- `id`: Unique identifier (UUID, 16 bytes)
 - `email`: Must be unique across all users
 - `name`: Display name shown in UI
 - `status`: Uses common status enum (ACTIVE, INACTIVE, DELETED)
@@ -51,30 +51,20 @@ Retrieves a single user by ID.
 
 ```protobuf
 message GetUserRequest {
-  string id = 1;  // User ID to retrieve
+  common.v1.UUID id = 1;  // User ID to retrieve (UUID)
 }
 ```
 
 **Response:**
 
-```protobuf
-message GetUserResponse {
-  User user = 1;  // The requested user
-}
-```
+Returns the created `User` directly.
 
 **Example:**
 
 ```go
-import (
-    userv1 "your-module/protocols/user/v1"
-    "google.golang.org/grpc"
-)
-
-client := userv1.NewUserServiceClient(conn)
-
-user, err := client.GetUser(ctx, &userv1.GetUserRequest{
-    Id: "user-123",
+user, err := client.CreateUser(ctx, &userv1.CreateUserRequest{
+    Email: "[email protected]",
+    Name:  "John Doe",
 })
 if err != nil {
     // Handle error (NOT_FOUND, INTERNAL, etc.)
