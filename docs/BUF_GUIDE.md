@@ -86,9 +86,6 @@ The main configuration file for Buf:
 
 ```yaml
 version: v2
-modules:
-  - path: common/v1
-  - path: user/v1
 lint:
   use:
     - DEFAULT
@@ -107,18 +104,7 @@ breaking:
   ignore_unstable_packages: false
 ```
 
-#### Modules
-
-Define proto modules in your workspace:
-
-```yaml
-modules:
-  - path: common/v1     # Shared types
-  - path: user/v1       # User service
-  - path: product/v1    # Product service
-```
-
-Each module corresponds to a proto package.
+This configuration uses a single-module workspace, which allows packages to import from each other (e.g., `user.v1` can import from `common.v1`).
 
 #### Lint Rules
 

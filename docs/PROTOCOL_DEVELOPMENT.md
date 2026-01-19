@@ -26,7 +26,6 @@ make add-service NAME=product
 This creates:
 - `product/v1/product.proto` with basic service template
 - `product/README.md` with documentation template
-- Updates `buf.yaml` to include the new module
 
 ### Manual Approach
 
@@ -101,18 +100,10 @@ This creates:
    }
    ```
 
-3. **Update buf.yaml**:
-   ```yaml
-   modules:
-     - path: common/v1
-     - path: user/v1
-     - path: product/v1  # Add new module
-   ```
-
-4. **Create README** (`product/README.md`):
+3. **Create README** (`product/README.md`):
    Document the service, methods, and usage examples.
 
-5. **Validate**:
+4. **Validate**:
    ```bash
    make buf-lint
    make protoc-validate PACKAGE=product
