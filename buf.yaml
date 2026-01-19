@@ -4,8 +4,6 @@ lint:
     - DEFAULT
     - PACKAGE_DIRECTORY_MATCH
     - PACKAGE_VERSION_SUFFIX
-  except:
-    - PACKAGE_AFFILIATION_SUFFIX
   enum_zero_value_suffix: _UNSPECIFIED
   rpc_allow_same_request_response: false
   rpc_allow_google_protobuf_empty_requests: false
