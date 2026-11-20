@@ -79,8 +79,8 @@ Install Go protobuf and gRPC plugins:
 make protoc-install
 
 # Or manually
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2
 ```
 
 Verify plugins are in PATH:
@@ -358,7 +358,7 @@ protoc-gen-go: program not found or is not executable
 **Solution:** Install and add to PATH:
 
 ```bash
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
 export PATH="$PATH:$(go env GOPATH)/bin"
 ```
 
@@ -389,7 +389,7 @@ brew upgrade protobuf  # macOS
 Or update plugins:
 
 ```bash
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
 ```
 
 ### Permission Denied
@@ -420,8 +420,8 @@ make protoc-generate-all
 ### 3. Keep Plugins Updated
 
 ```bash
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2
 ```
 
 ### 4. Use Source Relative Paths

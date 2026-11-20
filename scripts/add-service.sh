@@ -17,6 +17,12 @@ fi
 # Convert service name to lowercase
 SERVICE_NAME=$(echo "$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
 
+# Proto package names: lowercase letters, digits and underscores, starting with a letter
+if ! echo "$SERVICE_NAME" | grep -Eq '^[a-z][a-z0-9_]*$'; then
+    echo "Error: service name must match ^[a-z][a-z0-9_]*\$ (got '$SERVICE_NAME')"
+    exit 1
+fi
+
 # Check if service already exists
 if [ -d "$SERVICE_NAME" ]; then
     echo "Error: Service '$SERVICE_NAME' already exists"
@@ -34,7 +40,8 @@ PACKAGE_NAME="${SERVICE_NAME}.v1"
 GO_PACKAGE="github.com/andskur/protocols-template/${SERVICE_NAME}/v1;${SERVICE_NAME}v1"
 
 # Convert service name to PascalCase for message names
-SERVICE_PASCAL=$(echo "$SERVICE_NAME" | sed -r 's/(^|_)([a-z])/\U\2/g')
+# (portable: BSD/macOS sed has no \U, so use awk)
+SERVICE_PASCAL=$(echo "$SERVICE_NAME" | awk -F_ '{ for (i = 1; i <= NF; i++) printf "%s%s", toupper(substr($i, 1, 1)), substr($i, 2) }')
 
 cat > "$PROTO_FILE" <<EOF
 syntax = "proto3";
@@ -168,9 +175,9 @@ To use this service in your microservice:
    make proto-update
    \`\`\`
 
-2. Generate Go code:
+2. Generate Go code (service-side buf.gen.yaml with a go_package_prefix override, see docs/INTEGRATION.md):
    \`\`\`bash
-   make proto-generate PROTO_PACKAGE=${SERVICE_NAME}
+   make generate
    \`\`\`
 
 3. Import in your code:

@@ -48,13 +48,16 @@ make proto-setup PROTO_REPO=https://github.com/andskur/protocols-template.git
 # Update protocols
 make proto-update
 
-# Generate Go code
-make proto-generate PROTO_PACKAGE=user
+# Generate Go code (imported as <your-module>/protocols/user/v1)
+make generate
 ```
 
 **Using with any Go microservice:**
 
-Add this protocols repository using git subtree (see [docs/INTEGRATION.md](docs/INTEGRATION.md) for detailed instructions).
+Add this protocols repository using git subtree and generate with a Buf `go_package_prefix`
+override set to `<your-module>/protocols` (see [docs/INTEGRATION.md](docs/INTEGRATION.md)).
+This repository has no `go.mod` and does not commit generated code, so it is not consumed via
+`go get`; the integration guide explains why.
 
 ## Repository Structure
 

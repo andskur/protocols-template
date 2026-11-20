@@ -3,18 +3,23 @@ help: ## Display this help message
 	@echo "Available targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
+# Pinned tool versions
+BUF_VERSION                := v1.75.0
+PROTOC_GEN_GO_VERSION      := v1.36.12
+PROTOC_GEN_GO_GRPC_VERSION := v1.6.2
+
 # Installation targets
 .PHONY: buf-install
 buf-install: ## Install Buf CLI
 	@echo "Installing Buf..."
-	@which buf > /dev/null || go install github.com/bufbuild/buf/cmd/buf@latest
+	@which buf > /dev/null || go install github.com/bufbuild/buf/cmd/buf@$(BUF_VERSION)
 	@echo "Buf installed successfully"
 
 .PHONY: protoc-install
 protoc-install: ## Install protoc plugins
 	@echo "Installing protoc-gen-go and protoc-gen-go-grpc..."
-	@go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	@go install google.golang.org/protobuf/cmd/protoc-gen-go@$(PROTOC_GEN_GO_VERSION)
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@$(PROTOC_GEN_GO_GRPC_VERSION)
 	@echo "Protoc plugins installed successfully"
 
 .PHONY: install
