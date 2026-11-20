@@ -7,20 +7,21 @@ This guide explains how to integrate this protocols repository with your microse
 - [Integration Methods](#integration-methods)
 - [Git Subtree Integration](#git-subtree-integration-recommended)
 - [Git Submodule Integration](#git-submodule-integration)
-- [Direct Go Module Import](#direct-go-module-import)
+- [Why not `go get`](#why-not-go-get)
 - [Version Pinning](#version-pinning)
 - [Development Workflow](#development-workflow)
 - [Troubleshooting](#troubleshooting)
 
 ## Integration Methods
 
-Three main approaches for integrating protocols:
+Two supported approaches for integrating protocols. In both, the **consuming service generates the
+Go code** with its own module path (see [Generating Code](#generating-code)); this repository
+contains only `.proto` files and has no `go.mod` (see [Why not `go get`](#why-not-go-get)).
 
 | Method | Pros | Cons | Use Case |
 |--------|------|------|----------|
 | **Git Subtree** | • Simple workflow<br>• No submodule complexity<br>• Files committed to repo | • Larger repo size<br>• Updates require subtree pull | **Recommended** for most projects |
 | **Git Submodule** | • Small repo size<br>• Clear dependency tracking | • More complex workflow<br>• Easy to forget updates | Advanced users, multiple proto repos |
-| **Go Module** | • Go native<br>• Standard dependency | • Requires public repo<br>• Go-specific | Go-only microservices |
 
 ## Git Subtree Integration (Recommended)
 
@@ -98,53 +99,58 @@ git subtree pull \
 
 ### Generating Code
 
-Generate Go code from protocols:
+The `go_package` options in these `.proto` files point at this repository
+(`github.com/andskur/protocols-template/...`). That path is not importable from your service, so
+generate with Buf **managed mode** and override the prefix with your service's module path. Put a
+`buf.gen.yaml` in your service root (outside `protocols/`, which is replaced on every subtree pull):
 
-```bash
-# Generate for specific package
-make proto-generate PROTO_PACKAGE=user
-
-# Generate for all packages
-make proto-generate-all
+```yaml
+# buf.gen.yaml (service root)
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/your-org/your-service/protocols   # <your module>/protocols
+plugins:
+  - local: protoc-gen-go          # pinned via `go install ...@vX.Y.Z`
+    out: protocols
+    opt: [paths=source_relative]
+  - local: protoc-gen-go-grpc
+    out: protocols
+    opt: [paths=source_relative]
 ```
 
-Generated files go to: `protocols/<package>/v1/*.pb.go`
+```bash
+buf generate protocols --template buf.gen.yaml
+```
+
+Generated files go to `protocols/<package>/v1/*.pb.go` and are imported as
+`github.com/your-org/your-service/protocols/<package>/v1`. Do not commit them back to this repository.
+
+[go-microservice-template](https://github.com/andskur/go-microservice-template) ships exactly this
+setup: `make proto-setup`, `make proto-update` and `make generate`.
 
 ### Example Makefile Targets
 
-Add to your microservice's `Makefile`:
+Add to your microservice's `Makefile` (with the `buf.gen.yaml` above):
 
 ```makefile
 PROTO_DIR ?= protocols
 PROTO_REPO ?= https://github.com/andskur/protocols-template.git
-PROTO_PACKAGE ?=
+PROTO_BRANCH ?= main
 
 .PHONY: proto-setup
 proto-setup:
-ifndef PROTO_REPO
-	@echo "Error: PROTO_REPO parameter is required"
-	@exit 1
-endif
-	@echo "Setting up protocols from $(PROTO_REPO)..."
-	@git remote add protocols $(PROTO_REPO) 2>/dev/null || true
-	@git subtree add --prefix $(PROTO_DIR) protocols main --squash
+	git subtree add --prefix=$(PROTO_DIR) $(PROTO_REPO) $(PROTO_BRANCH) --squash
 
 .PHONY: proto-update
 proto-update:
-	@echo "Updating protocols..."
-	@git subtree pull --prefix $(PROTO_DIR) protocols main --squash
+	git subtree pull --prefix=$(PROTO_DIR) $(PROTO_REPO) $(PROTO_BRANCH) --squash
 
 .PHONY: proto-generate
 proto-generate:
-ifndef PROTO_PACKAGE
-	@echo "Error: PROTO_PACKAGE parameter is required"
-	@exit 1
-endif
-	@cd $(PROTO_DIR)/$(PROTO_PACKAGE) && buf generate
-
-.PHONY: proto-generate-all
-proto-generate-all:
-	@cd $(PROTO_DIR) && buf generate
+	buf generate $(PROTO_DIR) --template buf.gen.yaml
 ```
 
 ## Git Submodule Integration
@@ -189,9 +195,10 @@ git commit -m "Update protocols submodule"
 
 ### Generating Code
 
+Use the same service-side `buf.gen.yaml` as for subtrees:
+
 ```bash
-cd protocols
-buf generate
+buf generate protocols --template buf.gen.yaml
 ```
 
 ### Pros and Cons
@@ -224,57 +231,20 @@ proto-generate:
 	@cd protocols && buf generate
 ```
 
-## Direct Go Module Import
+## Why not `go get`
 
-Import pre-generated Go code directly (requires public repository).
+This repository intentionally has **no `go.mod` and no committed generated code**:
 
-### Setup
+- When it is added to a service as a git subtree, a `go.mod` at its root would turn `protocols/`
+  into a nested Go module. The service's own module then no longer contains
+  `<module>/protocols/...` and builds fail with
+  `no required module provides package <module>/protocols/user/v1`.
+- Committed `.pb.go` files would carry this repository's import paths and would be overwritten in
+  the service by the `go_package_prefix` regeneration on every build, so every `subtree pull` would
+  conflict with local changes.
 
-In your `go.mod`:
-
-```go
-require (
-    github.com/andskur/protocols-template v1.0.0
-)
-```
-
-### Import in Code
-
-```go
-import (
-    userv1 "github.com/andskur/protocols-template/user/v1"
-    commonv1 "github.com/andskur/protocols-template/common/v1"
-)
-
-func main() {
-    user := &userv1.User{
-        Id:     "123",
-        Email:  "[email protected]",
-        Name:   "John Doe",
-        Status: commonv1.CommonStatus_COMMON_STATUS_ACTIVE,
-    }
-}
-```
-
-### Updating
-
-```bash
-go get github.com/andskur/protocols-template@latest
-```
-
-### Pros and Cons
-
-**Pros:**
-- Standard Go workflow
-- Easy dependency management
-- Automatic updates via `go get`
-
-**Cons:**
-- Requires generated files in repo (violates best practice)
-- Go-specific (not for other languages)
-- Less control over code generation
-
-**Note:** This method requires committing generated `.pb.go` files to the protocols repository, which is not recommended in this template.
+If you need a `go get`-able Go package, publish generated code from a separate repository (or a
+`gen/go` submodule with its own tags) built from these protos.
 
 ## Version Pinning
 
@@ -300,12 +270,6 @@ git add protocols
 git commit -m "Pin protocols to v1.2.0"
 ```
 
-#### Go Module
-
-```bash
-go get github.com/andskur/protocols-template@v1.2.0
-```
-
 ### Version Tracking
 
 Document which version you're using in `README.md`:
@@ -327,7 +291,7 @@ Document which version you're using in `README.md`:
 
 2. **Generate Code**
    ```bash
-   make proto-generate PROTO_PACKAGE=user
+   make generate        # go-microservice-template; or: buf generate protocols --template buf.gen.yaml
    ```
 
 3. **Import in Your Code**
@@ -348,7 +312,7 @@ Document which version you're using in `README.md`:
 5. **Update Protocols (When Needed)**
    ```bash
    make proto-update
-   make proto-generate-all
+   make generate
    go mod tidy
    ```
 
@@ -429,21 +393,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Pin actions by commit SHA in real workflows.
+      - uses: actions/checkout@v5
         with:
           submodules: recursive  # If using submodules
       
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
-          go-version: '1.23'
+          go-version: '1.26'
       
-      - name: Install Buf
+      - name: Install Buf and plugins (pinned)
         run: |
-          go install github.com/bufbuild/buf/cmd/buf@latest
+          go install github.com/bufbuild/buf/cmd/buf@v1.75.0
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2
       
       - name: Generate protocols
         run: |
-          make proto-generate-all
+          buf generate protocols --template buf.gen.yaml
       
       - name: Build
         run: go build ./...
@@ -489,16 +456,8 @@ git submodule update --init --recursive
 import "your-module/protocols/user/v1"  // Not found
 ```
 
-**Solution:** Check `go.mod` module name matches import path:
-
-```go
-module your-module  // Must match import prefix
-
-require (
-    google.golang.org/grpc v1.60.0
-    google.golang.org/protobuf v1.31.0
-)
-```
+**Solution:** Check that the `go_package_prefix` in your service's `buf.gen.yaml` is
+`<module from go.mod>/protocols`, that `protocols/` contains no `go.mod`, and regenerate.
 
 ### Generated Files Missing
 
@@ -509,7 +468,7 @@ user/v1/user.pb.go: no such file or directory
 **Solution:**
 
 ```bash
-make proto-generate PROTO_PACKAGE=user
+buf generate protocols --template buf.gen.yaml
 ```
 
 ### Buf Not Found in CI
@@ -522,7 +481,7 @@ buf: command not found
 
 ```yaml
 - name: Install Buf
-  run: go install github.com/bufbuild/buf/cmd/buf@latest
+  run: go install github.com/bufbuild/buf/cmd/buf@v1.75.0
 ```
 
 ## Best Practices

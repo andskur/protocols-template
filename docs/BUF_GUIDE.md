@@ -69,7 +69,7 @@ VERSION="1.28.1" && \
 #### Using Go
 
 ```bash
-go install github.com/bufbuild/buf/cmd/buf@latest
+go install github.com/bufbuild/buf/cmd/buf@v1.75.0
 ```
 
 ### Verify Installation
@@ -488,7 +488,7 @@ If breaking detection flags a non-breaking change:
 
 6. **Update Buf regularly:**
    ```bash
-   go install github.com/bufbuild/buf/cmd/buf@latest
+   go install github.com/bufbuild/buf/cmd/buf@v1.75.0
    ```
 
 ## Additional Resources
