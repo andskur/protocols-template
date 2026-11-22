@@ -220,7 +220,7 @@ protocols-template/
 - Integration methods comparison
 - Git subtree integration (recommended)
 - Git submodule integration
-- Direct Go module import
+- Direct Go module import (removed: see docs/INTEGRATION.md "Why not go get")
 - Version pinning strategies
 - Development workflow
 - CI/CD integration examples

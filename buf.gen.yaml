@@ -1,10 +1,13 @@
+# Validation-only code generation for this repository (generated code is not
+# committed; consumers generate with their own go_package_prefix, see
+# docs/INTEGRATION.md). Remote plugin versions are pinned for reproducibility.
 version: v2
 plugins:
-  - remote: buf.build/protocolbuffers/go
+  - remote: buf.build/protocolbuffers/go:v1.36.12
     out: .
     opt:
       - paths=source_relative
-  - remote: buf.build/grpc/go
+  - remote: buf.build/grpc/go:v1.6.2
     out: .
     opt:
       - paths=source_relative
