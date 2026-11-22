@@ -175,25 +175,6 @@
         
           
           <li>
-            <a href="#common%2fv1%2ferrors.proto">common/v1/errors.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#common.v1.ErrorDetail"><span class="badge">M</span>ErrorDetail</a>
-                </li>
-              
-                <li>
-                  <a href="#common.v1.ErrorResponse"><span class="badge">M</span>ErrorResponse</a>
-                </li>
-              
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
             <a href="#common%2fv1%2fpagination.proto">common/v1/pagination.proto</a>
             <ul>
               
@@ -213,21 +194,6 @@
                   <a href="#common.v1.PageResponse"><span class="badge">M</span>PageResponse</a>
                 </li>
               
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#common%2fv1%2fstatus.proto">common/v1/status.proto</a>
-            <ul>
-              
-              
-                <li>
-                  <a href="#common.v1.CommonStatus"><span class="badge">E</span>CommonStatus</a>
-                </li>
               
               
               
@@ -257,105 +223,44 @@
             </ul>
           </li>
         
+          
+          <li>
+            <a href="#common%2fv1%2fstatus.proto">common/v1/status.proto</a>
+            <ul>
+              
+              
+                <li>
+                  <a href="#common.v1.CommonStatus"><span class="badge">E</span>CommonStatus</a>
+                </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#common%2fv1%2ferrors.proto">common/v1/errors.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#common.v1.ErrorDetail"><span class="badge">M</span>ErrorDetail</a>
+                </li>
+              
+                <li>
+                  <a href="#common.v1.ErrorResponse"><span class="badge">M</span>ErrorResponse</a>
+                </li>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
         <li><a href="#scalar-value-types">Scalar Value Types</a></li>
       </ul>
     </div>
 
-    
-      
-      <div class="file-heading">
-        <h2 id="common/v1/errors.proto">common/v1/errors.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="common.v1.ErrorDetail">ErrorDetail</h3>
-        <p>ErrorDetail provides structured information about a single error.</p><p>Can be used to represent validation errors, business logic errors, etc.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>code</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error code (e.g., INVALID_ARGUMENT, NOT_FOUND, PERMISSION_DENIED).
-Should follow gRPC status codes or custom application codes. </p></td>
-                </tr>
-              
-                <tr>
-                  <td>message</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Human-readable error message. </p></td>
-                </tr>
-              
-                <tr>
-                  <td>field</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Field name that caused the error (optional).
-Useful for validation errors to identify which field failed. </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#google.protobuf.Any">google.protobuf.Any</a></td>
-                  <td></td>
-                  <td><p>Additional context-specific metadata (optional).
-Can contain any serialized message type for rich error details. </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="common.v1.ErrorResponse">ErrorResponse</h3>
-        <p>ErrorResponse provides a consistent structure for error responses.</p><p>Use this for returning multiple errors in a single response.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>errors</td>
-                  <td><a href="#common.v1.ErrorDetail">ErrorDetail</a></td>
-                  <td>repeated</td>
-                  <td><p>List of errors that occurred.
-Multiple errors allow returning all validation failures at once. </p></td>
-                </tr>
-              
-                <tr>
-                  <td>trace_id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Trace ID for correlating errors across services.
-Should match the trace ID in distributed tracing systems. </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-
-      
-
-      
-
-      
     
       
       <div class="file-heading">
@@ -513,55 +418,6 @@ Empty if no more pages available. </p></td>
     
       
       <div class="file-heading">
-        <h2 id="common/v1/status.proto">common/v1/status.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-
-      
-        <h3 id="common.v1.CommonStatus">CommonStatus</h3>
-        <p>CommonStatus represents standard entity states across all services.</p><p>Use this enum for consistent status representation.</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>COMMON_STATUS_UNSPECIFIED</td>
-                <td>0</td>
-                <td><p>Default unspecified value (required by Buf linting).</p></td>
-              </tr>
-            
-              <tr>
-                <td>COMMON_STATUS_ACTIVE</td>
-                <td>1</td>
-                <td><p>Entity is active and available for use.</p></td>
-              </tr>
-            
-              <tr>
-                <td>COMMON_STATUS_INACTIVE</td>
-                <td>2</td>
-                <td><p>Entity is temporarily inactive but not deleted.</p></td>
-              </tr>
-            
-              <tr>
-                <td>COMMON_STATUS_DELETED</td>
-                <td>3</td>
-                <td><p>Entity is soft-deleted and should not be displayed.</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
         <h2 id="common/v1/types.proto">common/v1/types.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
@@ -667,6 +523,150 @@ For USD, $10.50 would be represented as 1050. </p></td>
                   <td></td>
                   <td><p>UUID value as 16 bytes.
 Use this instead of string representation to save space. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="common/v1/status.proto">common/v1/status.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+
+      
+        <h3 id="common.v1.CommonStatus">CommonStatus</h3>
+        <p>CommonStatus represents standard entity states across all services.</p><p>Use this enum for consistent status representation.</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>COMMON_STATUS_UNSPECIFIED</td>
+                <td>0</td>
+                <td><p>Default unspecified value (required by Buf linting).</p></td>
+              </tr>
+            
+              <tr>
+                <td>COMMON_STATUS_ACTIVE</td>
+                <td>1</td>
+                <td><p>Entity is active and available for use.</p></td>
+              </tr>
+            
+              <tr>
+                <td>COMMON_STATUS_INACTIVE</td>
+                <td>2</td>
+                <td><p>Entity is temporarily inactive but not deleted.</p></td>
+              </tr>
+            
+              <tr>
+                <td>COMMON_STATUS_DELETED</td>
+                <td>3</td>
+                <td><p>Entity is soft-deleted and should not be displayed.</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="common/v1/errors.proto">common/v1/errors.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="common.v1.ErrorDetail">ErrorDetail</h3>
+        <p>ErrorDetail provides structured information about a single error.</p><p>Can be used to represent validation errors, business logic errors, etc.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>code</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error code (e.g., INVALID_ARGUMENT, NOT_FOUND, PERMISSION_DENIED).
+Should follow gRPC status codes or custom application codes. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Human-readable error message. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>field</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Field name that caused the error (optional).
+Useful for validation errors to identify which field failed. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#google.protobuf.Any">google.protobuf.Any</a></td>
+                  <td></td>
+                  <td><p>Additional context-specific metadata (optional).
+Can contain any serialized message type for rich error details. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="common.v1.ErrorResponse">ErrorResponse</h3>
+        <p>ErrorResponse provides a consistent structure for error responses.</p><p>Use this for returning multiple errors in a single response.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>errors</td>
+                  <td><a href="#common.v1.ErrorDetail">ErrorDetail</a></td>
+                  <td>repeated</td>
+                  <td><p>List of errors that occurred.
+Multiple errors allow returning all validation failures at once. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>trace_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Trace ID for correlating errors across services.
+Should match the trace ID in distributed tracing systems. </p></td>
                 </tr>
               
             </tbody>
